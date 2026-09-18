@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('/api/game/draw', { method: 'POST' });
             const data = await res.json();
             
-            // Mix for 3 seconds
+            // Mix for 5 seconds to build suspense
             setTimeout(() => {
                 isMixing = false; // Stop frenzy
                 
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert(data.message);
                     btnDraw.disabled = false;
                 }
-            }, 3000);
+            }, 5000);
             
         } catch (err) {
             console.error('Error drawing ball:', err);

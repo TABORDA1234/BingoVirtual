@@ -9,14 +9,12 @@ load_dotenv()
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Fallback to Supabase explicitly if DATABASE_URL is not set on Render
-default_db = 'postgresql://postgres.sknhfgsxgajgoaudigvy:baloteraDara111.@aws-0-us-west-2.pooler.supabase.com:5432/postgres'
-db_url = os.getenv('DATABASE_URL', default_db)
-
+# If DATABASE_URL starts with postgres://, replace with postgresql:// for SQLAlchemy
+db_url = os.getenv('DATABASE_URL')
 if db_url and db_url.startswith('postgres://'):
     db_url = db_url.replace('postgres://', 'postgresql://', 1)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url or ('sqlite:///' + os.path.join(basedir, 'bingo.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'almacafebingo-secret-key-123' # Requerido para sesiones
 

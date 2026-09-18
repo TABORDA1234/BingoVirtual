@@ -32,8 +32,8 @@ def get_letter_for_number(number):
 def login():
     error = request.args.get('error')
     if request.method == 'POST':
-        card_id = request.form.get('card_id')
-        password = request.form.get('password')
+        card_id = request.form.get('card_id', '').strip()
+        password = request.form.get('password', '').strip()
         
         # Validar admin
         if card_id.lower() == 'admin' and password == 'DARANOVA111':

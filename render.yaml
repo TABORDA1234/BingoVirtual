@@ -2,7 +2,8 @@ services:
   - type: web
     name: alma-cafe-bingo
     env: python
-    buildCommand: "pip install -r requirements.txt && python seed.py"
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
     envVars:
       - key: PYTHON_VERSION

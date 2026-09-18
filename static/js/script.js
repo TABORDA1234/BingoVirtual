@@ -340,12 +340,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             
             if (data.status === 'success') {
-                if (data.winner) {
-                    validationResult.textContent = data.message;
-                    validationResult.classList.add('success');
-                } else {
-                    validationResult.textContent = `${data.message}: ${data.missing.join(', ')}`;
-                    validationResult.classList.add('error');
+                if (data.patterns) {
+                    let html = '<h4 style="margin-bottom: 8px;">Estado del Cartón:</h4><ul style="text-align: left; list-style: none; padding: 0; margin: 0; font-size: 0.95rem;">';
+                    const names = {
+                        'diagonal': 'Diagonal',
+                        'letra_x': 'Letra X',
+                        'marco': 'Marco (Borde)',
+                        'carton_lleno': 'Cartón Lleno'
+                    };
+                    
+                    for (const [key, result] of Object.entries(data.patterns)) {
+                        const name = names[key] || key;
+                        if (result.winner) {
+                            html += `<li style="margin-bottom: 6px; color: #10b981;">✅ <strong>${name}</strong>: ¡GANADOR!</li>`;
+                        } else {
+                            html += `<li style="margin-bottom: 6px; color: #6b7280;">❌ <strong>${name}</strong>: Faltan ${result.missing.join(', ')}</li>`;
+                        }
+                    }
+                    html += '</ul>';
+                    validationResult.innerHTML = html;
+                    validationResult.classList.remove('error', 'success');
+                    validationResult.style.color = '#1e1b4b'; // dark text
+                    validationResult.style.padding = '15px';
                 }
             } else {
                 validationResult.textContent = data.message;

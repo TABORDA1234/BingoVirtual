@@ -224,7 +224,11 @@
             {% for i in range(5) %}
                 <div class="bingo-cell" data-number="{{ numbers[i] }}">{{ numbers[i] }}</div>
                 <div class="bingo-cell" data-number="{{ numbers[i+5] }}">{{ numbers[i+5] }}</div>
-                <div class="bingo-cell" data-number="{{ numbers[i+10] }}">{{ numbers[i+10] }}</div>
+                {% if i == 2 %}
+                    <div class="bingo-cell marked" style="font-size: 1.2rem; font-weight: 700;">LIBRE</div>
+                {% else %}
+                    <div class="bingo-cell" data-number="{{ numbers[i+10] }}">{{ numbers[i+10] }}</div>
+                {% endif %}
                 <div class="bingo-cell" data-number="{{ numbers[i+15] }}">{{ numbers[i+15] }}</div>
                 <div class="bingo-cell" data-number="{{ numbers[i+20] }}">{{ numbers[i+20] }}</div>
             {% endfor %}
@@ -247,7 +251,7 @@
         // Manual marking
         cells.forEach(cell => {
             cell.addEventListener('click', () => {
-                if (!isAutoPlay) {
+                if (!isAutoPlay && cell.textContent.trim() !== 'LIBRE') {
                     cell.classList.toggle('marked');
                 }
             });
@@ -264,6 +268,7 @@
         function applyAutoPlay() {
             if (!isAutoPlay) return;
             cells.forEach(cell => {
+                if (cell.textContent.trim() === 'LIBRE') return;
                 const num = parseInt(cell.dataset.number);
                 if (drawnNumbersGlobal.includes(num)) {
                     cell.classList.add('marked');

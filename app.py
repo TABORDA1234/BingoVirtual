@@ -128,12 +128,36 @@ def validate_card():
     drawn_balls = [b.number for b in game.balls]
     card_numbers = card.get_numbers()
     
-    missing = [n for n in card_numbers if n not in drawn_balls]
+    # Índices ignorando la posición 12 (LIBRE)
+    d1_indices = [0, 6, 18, 24]
+    d2_indices = [4, 8, 16, 20]
+    x_indices = [0, 6, 18, 24, 4, 8, 16, 20]
+    marco_indices = [0, 5, 10, 15, 20, 4, 9, 14, 19, 24, 1, 2, 3, 21, 22, 23]
+    lleno_indices = [i for i in range(25) if i != 12]
     
-    if not missing:
-        return jsonify({"status": "success", "winner": True, "message": "BINGO! You are a winner!"})
+    patterns = {}
+    
+    # Diagonal (la mejor de las dos)
+    missing_d1 = [card_numbers[i] for i in d1_indices if card_numbers[i] not in drawn_balls]
+    missing_d2 = [card_numbers[i] for i in d2_indices if card_numbers[i] not in drawn_balls]
+    if len(missing_d1) <= len(missing_d2):
+        patterns['diagonal'] = {"winner": len(missing_d1) == 0, "missing": missing_d1}
     else:
-        return jsonify({"status": "success", "winner": False, "missing": missing, "message": f"Missing {len(missing)} numbers"})
+        patterns['diagonal'] = {"winner": len(missing_d2) == 0, "missing": missing_d2}
+        
+    # Letra X
+    missing_x = [card_numbers[i] for i in x_indices if card_numbers[i] not in drawn_balls]
+    patterns['letra_x'] = {"winner": len(missing_x) == 0, "missing": missing_x}
+    
+    # Marco
+    missing_marco = [card_numbers[i] for i in marco_indices if card_numbers[i] not in drawn_balls]
+    patterns['marco'] = {"winner": len(missing_marco) == 0, "missing": missing_marco}
+    
+    # Cartón Lleno
+    missing_lleno = [card_numbers[i] for i in lleno_indices if card_numbers[i] not in drawn_balls]
+    patterns['carton_lleno'] = {"winner": len(missing_lleno) == 0, "missing": missing_lleno}
+    
+    return jsonify({"status": "success", "patterns": patterns})
 
 if __name__ == '__main__':
     with app.app_context():

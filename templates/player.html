@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Cartón {{ card_id }}</title>
-    <!-- Fuentes para replicar el estilo del tarjetón físico -->
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;500;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Reseteo y fondo rosado con patrón sutil */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         body { 
             background-color: #ffe6ea;
-            background-image: radial-gradient(#ffccd5 2px, transparent 2px);
-            background-size: 20px 20px;
+            background-image: url('/static/img/bg.jpg');
+            background-size: 300px;
+            background-repeat: repeat;
             color: #ef233c;
             min-height: 100vh;
             display: flex;
@@ -31,35 +30,75 @@
         }
 
         /* Cinta superior (Ribbon) */
+        .ribbon-wrapper {
+            width: 100%;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+        }
+
         .ribbon {
             background-color: #f73859;
             color: white;
             width: 100%;
             text-align: center;
-            padding: 10px 0;
             position: relative;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-top: 2px dashed rgba(255,255,255,0.6);
-            border-bottom: 2px dashed rgba(255,255,255,0.6);
+            clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%);
+            padding: 10px 25px;
         }
-        
+
+        .ribbon-inner {
+            border: 2px dashed rgba(255,255,255,0.8);
+            padding: 15px 0;
+        }
+
         .ribbon h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 700;
             line-height: 1;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
-        /* Texto de estado */
+        /* Controles y Status */
+        .controls-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .switch-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #f73859;
+        }
+
+        /* Toggle Switch CSS */
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ffb3c1; transition: .4s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        input:checked + .slider { background-color: #f73859; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
         #status-text {
             text-align: center;
             color: #f73859;
             font-weight: 500;
-            margin-bottom: 15px;
             font-size: 1rem;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.9);
             padding: 5px 15px;
             border-radius: 15px;
         }
@@ -71,24 +110,36 @@
             gap: 8px;
             width: 100%;
             margin-bottom: 10px;
+            background: rgba(255, 204, 213, 0.85); /* Pink rectangle */
+            padding: 10px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         
         .bingo-header-cell {
-            background: white;
             color: #f73859;
-            font-size: 2rem;
-            font-weight: 800;
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            font-weight: 700;
             text-align: center;
-            padding: 2px 0;
-            border-radius: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            /* White outline stroke to match the physical card */
+            text-shadow: 
+                -3px -3px 0 #fff, 
+                 3px -3px 0 #fff, 
+                -3px  3px 0 #fff, 
+                 3px  3px 0 #fff,
+                 0px  4px 0 #fff,
+                 0px -4px 0 #fff,
+                 4px  0px 0 #fff,
+                -4px  0px 0 #fff,
+                 0px  0px 10px rgba(0,0,0,0.1);
         }
 
         /* Cuadrícula de números */
         .bingo-card { 
             display: grid; 
             grid-template-columns: repeat(5, 1fr); 
-            background: white; 
+            background: rgba(255,255,255,0.95); 
             width: 100%;
             box-shadow: 0 8px 16px rgba(247, 56, 89, 0.15);
         }
@@ -99,7 +150,7 @@
             align-items: center; 
             justify-content: center; 
             font-size: 2rem; 
-            font-weight: 300; /* Tipografía delgada como en la imagen */
+            font-weight: 300;
             color: #f73859;
             border: 1px solid #ffccd5;
             cursor: pointer; 
@@ -108,7 +159,7 @@
             position: relative;
         }
         
-        /* Estado marcado (Simula una ficha roja traslúcida) */
+        /* Estado marcado (Ficha roja traslúcida original) */
         .bingo-cell.marked::after {
             content: '';
             position: absolute;
@@ -130,17 +181,34 @@
             padding: 10px 20px;
             border-radius: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        .back-btn a:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
     <div class="player-container">
         <!-- Cinta estilo Alma Cafe -->
-        <div class="ribbon">
-            <h1>alma cafe</h1>
+        <div class="ribbon-wrapper">
+            <div class="ribbon">
+                <div class="ribbon-inner">
+                    <h1>alma cafe</h1>
+                </div>
+            </div>
         </div>
 
-        <p id="status-text">Cartón #{{ card_id }} - Toca para marcar</p>
+        <div class="controls-row">
+            <div class="switch-container">
+                <span class="switch-label">Juego Automático</span>
+                <label class="switch">
+                    <input type="checkbox" id="auto-play-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <p id="status-text">Cartón #{{ card_id }}</p>
+        </div>
         
         <!-- Letras BINGO -->
         <div class="bingo-header">
@@ -170,14 +238,40 @@
     <script>
         const statusText = document.getElementById('status-text');
         const cells = document.querySelectorAll('.bingo-cell');
+        const autoPlayToggle = document.getElementById('auto-play-toggle');
         const cardId = '{{ card_id }}';
         
-        // Manual marking toggle
+        let isAutoPlay = false;
+        let drawnNumbersGlobal = [];
+
+        // Manual marking
         cells.forEach(cell => {
             cell.addEventListener('click', () => {
-                cell.classList.toggle('marked');
+                if (!isAutoPlay) {
+                    cell.classList.toggle('marked');
+                }
             });
         });
+
+        // Auto play toggle
+        autoPlayToggle.addEventListener('change', (e) => {
+            isAutoPlay = e.target.checked;
+            if (isAutoPlay) {
+                applyAutoPlay();
+            }
+        });
+
+        function applyAutoPlay() {
+            if (!isAutoPlay) return;
+            cells.forEach(cell => {
+                const num = parseInt(cell.dataset.number);
+                if (drawnNumbersGlobal.includes(num)) {
+                    cell.classList.add('marked');
+                } else {
+                    cell.classList.remove('marked'); // Clears any incorrectly marked manual cells
+                }
+            });
+        }
         
         async function pollGameState() {
             try {
@@ -185,9 +279,19 @@
                 const data = await res.json();
                 
                 if (data.active) {
-                    statusText.innerHTML = `Cartón #${cardId} <br> <span style="font-size: 0.8rem">Juego en progreso</span>`;
+                    const statusSub = isAutoPlay ? "Marcando automáticamente" : "Toca para marcar";
+                    statusText.innerHTML = `Cartón #${cardId} <br> <span style="font-size: 0.8rem">${statusSub}</span>`;
+                    
+                    drawnNumbersGlobal = data.balls.map(b => b.number);
+                    if (isAutoPlay) {
+                        applyAutoPlay();
+                    }
                 } else {
                     statusText.innerHTML = `Cartón #${cardId} <br> <span style="font-size: 0.8rem">Esperando nueva partida...</span>`;
+                    drawnNumbersGlobal = [];
+                    if (isAutoPlay) {
+                        cells.forEach(cell => cell.classList.remove('marked'));
+                    }
                 }
             } catch (err) {
                 console.error(err);

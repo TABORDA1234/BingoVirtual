@@ -215,20 +215,33 @@ CARDS_DATA = {
   }
 }
 
+import random
+
 def seed():
     with app.app_context():
         db.drop_all()
         db.create_all()
+        passwords_info = []
         for card_id, data in CARDS_DATA.items():
             flat_numbers = []
             for letter in ['B', 'I', 'N', 'G', 'O']:
                 flat_numbers.extend(data[letter])
             
-            card = Card(id=card_id, numbers=json.dumps(flat_numbers))
+            password = str(random.randint(100000, 999999))
+            card = Card(id=card_id, password=password, numbers=json.dumps(flat_numbers))
             db.session.add(card)
+            passwords_info.append(f"Cartón: {card_id} | Contraseña: {password}")
         
         db.session.commit()
-        print("Seeded 30 Real Bingo Cards.")
+        
+        with open('contraseñas_cartones.txt', 'w', encoding='utf-8') as f:
+            f.write("CONTRASEÑAS PARA JUGADORES - ALMA CAFE BINGO\n")
+            f.write("="*45 + "\n")
+            f.write("\n".join(passwords_info))
+            f.write("\n" + "="*45 + "\n")
+            f.write("CONTRASEÑA ADMINISTRADOR: DARANOVA111\n")
+            
+        print("Seeded 30 Real Bingo Cards with passwords. File generated.")
 
 if __name__ == '__main__':
     seed()

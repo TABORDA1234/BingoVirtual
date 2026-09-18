@@ -1,12 +1,22 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from models import db, Game, Ball, Card
 import random
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'bingo.db')
+
+# If DATABASE_URL starts with postgres://, replace with postgresql:// for SQLAlchemy
+db_url = os.getenv('DATABASE_URL')
+if db_url and db_url.startswith('postgres://'):
+    db_url = db_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url or ('sqlite:///' + os.path.join(basedir, 'bingo.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'almacafebingo-secret-key-123' # Requerido para sesiones
 
 db.init_app(app)
 
@@ -18,16 +28,39 @@ def get_letter_for_number(number):
     elif 61 <= number <= 75: return 'O'
     return ''
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    error = request.args.get('error')
+    if request.method == 'POST':
+        card_id = request.form.get('card_id')
+        password = request.form.get('password')
+        
+        # Validar admin
+        if card_id.lower() == 'admin' and password == 'DARANOVA111':
+            session['is_admin'] = True
+            return redirect(url_for('screen'))
+            
+        # Validar jugador
+        card = Card.query.get(card_id)
+        if card and card.password == password:
+            session[f'auth_{card_id}'] = True
+            return redirect(url_for('play', card_id=card_id))
+            
+        error = "ID o contraseña incorrectos"
+        
+    return render_template('login.html', error=error)
 
 @app.route('/screen')
 def screen():
+    if not session.get('is_admin'):
+        return redirect(url_for('login', error="Acceso denegado. Inicia sesión como admin."))
     return render_template('index.html')
 
 @app.route('/play/<card_id>')
 def play(card_id):
+    if not session.get(f'auth_{card_id}'):
+        return redirect(url_for('login', error="No autorizado para ver este cartón."))
+        
     card = Card.query.get(card_id)
     if not card:
         return redirect(url_for('login', error="Cartón no encontrado"))

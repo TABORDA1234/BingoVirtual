@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Balotera Virtual de Bingo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="app-container">
-        <header class="glass-panel">
-            <h1>Alma Café BINGO</h1>
-            <div class="controls">
-                <button id="btn-new-game" class="btn primary">Nueva Partida</button>
-            </div>
-        </header>
+        <!-- Cinta superior (Ribbon) -->
+        <div class="ribbon">
+            <h1>alma cafe</h1>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 10px;">
+            <button id="btn-new-game" class="btn primary">Nueva Partida</button>
+        </div>
 
         <main class="main-content">
             <section class="left-panel">
@@ -39,7 +41,7 @@
                     <h3>Validar Cartón</h3>
                     <div class="input-group">
                         <input type="text" id="card-id" placeholder="ID (ej. 001)" maxlength="3">
-                        <button id="btn-validate" class="btn outline">Validar</button>
+                        <button id="btn-validate" class="btn primary">Validar</button>
                     </div>
                     <div id="validation-result" class="result-msg"></div>
                 </div>

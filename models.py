@@ -16,7 +16,9 @@ class Ball(db.Model):
 
 class Card(db.Model):
     id = db.Column(db.String(3), primary_key=True)
+    password = db.Column(db.String(6), nullable=False)
     numbers = db.Column(db.Text, nullable=False)
     
     def get_numbers(self):
+        import json
         return json.loads(self.numbers)

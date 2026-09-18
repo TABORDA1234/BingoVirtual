@@ -4,31 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Alma Café BINGO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
         .login-container { max-width: 400px; margin: 0 auto; text-align: center; }
-        .login-container h1 { margin-bottom: 20px; }
+        .login-container h2 { margin-bottom: 20px; color: var(--primary); font-weight: 700; }
         .login-form { display: flex; flex-direction: column; gap: 15px; }
-        .login-form input { padding: 12px; font-size: 1.2rem; text-align: center; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); color: white; }
+        .login-form input { padding: 12px; font-size: 1.2rem; text-align: center; border-radius: 8px; border: 1px solid var(--glass-border); background: white; color: var(--text-main); }
+        .login-form input:focus { border-color: var(--primary); outline: none; }
+        .error-msg { color: var(--error); font-weight: 500; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-    <div class="glass-panel login-container">
-        <h1>Ingresa a tu Cartón</h1>
-        <div class="login-form">
-            <input type="text" id="card-id-input" placeholder="ID del Cartón (ej. 001)" maxlength="3">
-            <button id="btn-enter" class="btn primary">Jugar</button>
-        </div>
-        <div style="margin-top: 30px;">
-            <a href="/screen" style="color: var(--secondary); text-decoration: none;">Ir a Pantalla Principal (Admin)</a>
+    <div class="app-container" style="justify-content: center;">
+        <div class="glass-panel login-container">
+            <div class="ribbon-wrapper" style="margin-top: -20px;">
+                <div class="ribbon" style="padding: 10px;">
+                    <div class="ribbon-inner" style="padding: 5px;">
+                        <h1 style="font-size: 2.5rem;">alma cafe</h1>
+                    </div>
+                </div>
+            </div>
+            
+            <h2>Ingreso al Sistema</h2>
+            
+            {% if error %}
+            <div class="error-msg">{{ error }}</div>
+            {% endif %}
+            
+            <form class="login-form" method="POST" action="/">
+                <input type="text" name="card_id" placeholder="Usuario / ID Cartón" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <button type="submit" class="btn primary">Ingresar</button>
+            </form>
+            
         </div>
     </div>
-    <script>
-        document.getElementById('btn-enter').addEventListener('click', () => {
-            const val = document.getElementById('card-id-input').value.trim();
-            if(val) window.location.href = '/play/' + val;
-        });
-    </script>
 </body>
 </html>

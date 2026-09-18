@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balotera Virtual de Bingo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="glass-panel">
+            <h1>Alma Café BINGO</h1>
+            <div class="controls">
+                <button id="btn-new-game" class="btn primary">Nueva Partida</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="left-panel">
+                <div class="balotera-container glass-panel">
+                    <div class="balotera-machine">
+                        <div class="balotera-sphere" id="balotera-sphere">
+                            <!-- Balls injected by JS -->
+                        </div>
+                        <div class="balotera-base"></div>
+                        <div class="balotera-tunnel">
+                            <div class="tunnel-tube"></div>
+                            <div class="tunnel-ball" id="tunnel-ball">
+                                <span class="letter" id="tunnel-letter"></span>
+                                <span class="number" id="tunnel-number"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="btn-draw" class="btn secondary action-btn" disabled>Sacar Balota</button>
+                </div>
+                
+                <div class="validate-container glass-panel">
+                    <h3>Validar Cartón</h3>
+                    <div class="input-group">
+                        <input type="text" id="card-id" placeholder="ID (ej. 001)" maxlength="3">
+                        <button id="btn-validate" class="btn outline">Validar</button>
+                    </div>
+                    <div id="validation-result" class="result-msg"></div>
+                </div>
+            </section>
+
+            <section class="right-panel glass-panel">
+                <h2>Tablero General</h2>
+                <div class="board" id="board">
+                    <!-- Numbers will be injected here via JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Pelotica overlay -->
+    <div class="pelotica-overlay" id="pelotica-overlay">
+        <div class="pelotica" id="pelotica">
+            <span class="letter" id="pelotica-letter">B</span>
+            <span class="number" id="pelotica-number">12</span>
+        </div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

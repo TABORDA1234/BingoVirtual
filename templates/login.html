@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Alma Café BINGO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .login-container { max-width: 400px; margin: 0 auto; text-align: center; }
+        .login-container h1 { margin-bottom: 20px; }
+        .login-form { display: flex; flex-direction: column; gap: 15px; }
+        .login-form input { padding: 12px; font-size: 1.2rem; text-align: center; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); color: white; }
+    </style>
+</head>
+<body>
+    <div class="glass-panel login-container">
+        <h1>Ingresa a tu Cartón</h1>
+        <div class="login-form">
+            <input type="text" id="card-id-input" placeholder="ID del Cartón (ej. 001)" maxlength="3">
+            <button id="btn-enter" class="btn primary">Jugar</button>
+        </div>
+        <div style="margin-top: 30px;">
+            <a href="/screen" style="color: var(--secondary); text-decoration: none;">Ir a Pantalla Principal (Admin)</a>
+        </div>
+    </div>
+    <script>
+        document.getElementById('btn-enter').addEventListener('click', () => {
+            const val = document.getElementById('card-id-input').value.trim();
+            if(val) window.location.href = '/play/' + val;
+        });
+    </script>
+</body>
+</html>

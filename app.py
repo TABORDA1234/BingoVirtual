@@ -128,12 +128,12 @@ def validate_card():
     drawn_balls = [b.number for b in game.balls]
     card_numbers = card.get_numbers()
     
-    # Índices ignorando la posición 12 (LIBRE)
-    d1_indices = [0, 6, 18, 24]
-    d2_indices = [4, 8, 16, 20]
-    x_indices = [0, 6, 18, 24, 4, 8, 16, 20]
+    # Índices incluyendo el centro (12)
+    d1_indices = [0, 6, 12, 18, 24]
+    d2_indices = [4, 8, 12, 16, 20]
+    x_indices = [0, 6, 12, 18, 24, 4, 8, 16, 20]
     marco_indices = [0, 5, 10, 15, 20, 4, 9, 14, 19, 24, 1, 2, 3, 21, 22, 23]
-    lleno_indices = [i for i in range(25) if i != 12]
+    lleno_indices = list(range(25))
     
     patterns = {}
     

@@ -9,12 +9,14 @@ load_dotenv()
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# If DATABASE_URL starts with postgres://, replace with postgresql:// for SQLAlchemy
-db_url = os.getenv('DATABASE_URL')
+# Fallback to Supabase explicitly if DATABASE_URL is not set on Render
+default_db = 'postgresql://postgres.sknhfgsxgajgoaudigvy:baloteraDara111.@aws-0-us-west-2.pooler.supabase.com:5432/postgres'
+db_url = os.getenv('DATABASE_URL', default_db)
+
 if db_url and db_url.startswith('postgres://'):
     db_url = db_url.replace('postgres://', 'postgresql://', 1)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = db_url or ('sqlite:///' + os.path.join(basedir, 'bingo.db'))
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'almacafebingo-secret-key-123' # Requerido para sesiones
 
@@ -32,7 +34,7 @@ def get_letter_for_number(number):
 def login():
     error = request.args.get('error')
     if request.method == 'POST':
-        card_id = request.form.get('card_id', '').strip()
+        card_id = request.form.get('card_id', '').strip().zfill(3)
         password = request.form.get('password', '').strip()
         
         # Validar admin
@@ -42,6 +44,7 @@ def login():
             
         # Validar jugador
         card = Card.query.get(card_id)
+        print(f"Login attempt: ID={repr(card_id)} Pass={repr(password)} DB_Pass={repr(card.password) if card else 'NO CARD'}", flush=True)
         if card and card.password == password:
             session[f'auth_{card_id}'] = True
             return redirect(url_for('play', card_id=card_id))
